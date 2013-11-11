@@ -9,7 +9,7 @@ class Wiki(object):
         try:
             results = wikipedia.page(term)
         except wikipedia.exceptions.DisambiguationError as e:
-            if len(e) >= 6:
+            if len(e.options) >= 6:
                 response = response + "Your query to WikiBot returned a disambiguation page. Here are the top 5 pages:  \n"
             else:
                 response = response + "Your query to WikiBot returned a disambiguation page. Here are the pages:  \n"
