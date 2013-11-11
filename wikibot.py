@@ -56,6 +56,7 @@ def main():
                     msg = msg.replace('&quot;','"')
                     msg = msg.replace('&gt;',">")
                     msg = msg.replace('&lt;',"<")
+                    msg = msg.strip()
                     print msg + ' ' + language
                     wikiArticle = wiki.searchwiki(msg,convertLanguageCode(language))
                 #msg=(wikiArticle)
