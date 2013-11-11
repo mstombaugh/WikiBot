@@ -4,7 +4,7 @@ import requests
 class Wiki(object):
 
     def searchwiki(self, input, lang):
-        response = ""
+        response = ''
         term = input.encode('ascii', 'ignore')
         
         wikipedia.set_lang(lang)
@@ -17,8 +17,8 @@ class Wiki(object):
 
         try:
             results = wikipedia.page(term)
-            summary = (results.summary[:9000] + '..') if len(results.summary) > 9000 else results.summary
-            response = response + "Here is what WikiBot found on \"" + term + "\":\n\n" + results.title +"  \n" + summary + "\n\n" + "Link to article [" + results.title + "](" + self.formaturl(results.url) + ")\n\n"
+            summary = (results.summary[:9000] + '...') if len(results.summary) > 9000 else results.summary
+            response = response + "Here is what WikiBot found on \"" + term + "\":\n\n**" + results.title +"**  \n> " + summary + "\n\n" + "Link to article [" + results.title + "](" + self.formaturl(results.url) + ")\n\n"
             
             response = self.recommender(results, response, term)
             
@@ -27,9 +27,9 @@ class Wiki(object):
         except wikipedia.exceptions.DisambiguationError as e:
             response=''
             if len(e.options) >= 6:
-                response = response + "Your query " + term + " to WikiBot returned a disambiguation page. Here are the top 5 pages:  \n"
+                response = response + "Your query \"" + term + "\" to WikiBot returned a disambiguation page. Here are the top 5 pages:  \n\n"
             else:
-                response = response + "Your query " + term + " to WikiBot returned a disambiguation page. Here are the pages:  \n"
+                response = response + "Your query \"" + term + "\" to WikiBot returned a disambiguation page. Here are the pages:  \n\n"
             count = 0
             
             for option in e.options:
@@ -38,17 +38,17 @@ class Wiki(object):
                     break  
                 try:
                     x = wikipedia.page(option.encode('ascii', 'ignore'))
-                except wikipedia.exceptions.PageError as t:
-                    response = response + option + ": Sorry couldn't fetch the link.  \n"
-                except wikipedia.exceptions.DisambiguationError as t:
-                    response = response + option + ": Sorry couldn't fetch the link.  \n"
+                except (wikipedia.exceptions.PageError, wikipedia.exceptions.DisambiguationError):
+                    response = response + "* " + option + ": Sorry couldn't fetch the link.  \n"
                 else:
-                    response = response + "[" + x.title + "](" + self.formaturl(x.url) + "): " + wikipedia.summary(option.encode('ascii', 'ignore'), sentences=1) + "  \n"
+                    response = response + "* [" + x.title + "](" + self.formaturl(x.url) + "): " + wikipedia.summary(option.encode('ascii', 'ignore'), sentences=1) + "  \n"
                     
             response = self.wikifooter(response)  
+            
         except wikipedia.exceptions.PageError as e:
             response = response + "Sorry, WikiBot can not find a page on \"" + term + "\"."
             response = self.wikifooter(response)
+            
         return response
         
     
