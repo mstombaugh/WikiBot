@@ -1,5 +1,6 @@
-import wikipedia
+#import wikipedia
 import requests
+import wikipedia
 
 class Wiki(object):
 
