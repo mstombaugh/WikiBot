@@ -430,7 +430,7 @@ class WikipediaPage(object):
     @property
     def categories(self):
         '''
-        Get a list of all categories from page
+        Get a list of all non-hidden categories from page
         '''
         if not getattr(self, '_categories', False):
             query_params = {
