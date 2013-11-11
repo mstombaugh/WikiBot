@@ -1,10 +1,17 @@
 import wikipedia
+import requests
 
 class Wiki(object):
 
-    def searchwiki(self, input):
+    def searchwiki(self, input, lang):
         response = ""
         term = input.encode('ascii', 'ignore')
+        
+        wikipedia.set_lang(lang)
+        try:
+            wikipedia.search(term)
+        except requests.exceptions.ConnectionError:
+            wikipedia.set_lang("en")
         
         try:
             results = wikipedia.page(term)
@@ -26,7 +33,7 @@ class Wiki(object):
                 except wikipedia.exceptions.DisambiguationError as t:
                     response = response + x.title +"  \n"
                 else:
-                    response = response + "[" + x.title + "](" + str(x.url) + "): " + wikipedia.summary(option.encode('ascii', 'ignore'), sentences=1) + "  \n"
+                    response = response + "[" + x.title + "](" + self.formaturl(x.url) + "): " + wikipedia.summary(option.encode('ascii', 'ignore'), sentences=1) + "  \n"
                     
             response = self.wikifooter(response)
             return response    
@@ -36,11 +43,15 @@ class Wiki(object):
             return response
         
         summary = (results.summary[:9000] + '..') if len(results.summary) > 9000 else results.summary
-        response = response + "Here is what WikiBot found on \"" + term + "\":\n\n" + results.title +"  \n" + summary + "\n\n" + "Link to article [" + results.title + "](" + str(results.url) + ")"
+        response = response + "Here is what WikiBot found on \"" + term + "\":\n\n" + results.title +"  \n" + summary + "\n\n" + "Link to article [" + results.title + "](" + self.formaturl(results.url) + ")"
         
         response = self.wikifooter(response)
         return response
     
+    def formaturl(self, url):
+        url.replace("(","\(")
+        url.replace(")","\)")
+        return url
     
     def wikifooter(self, input):
         input = input + "\n\nFor more information on WikiBot, visit [wiki-bot.net](http://www.wiki-bot.net/)."
@@ -48,5 +59,5 @@ class Wiki(object):
         
 if __name__ == "__main__":
     search = Wiki()
-    print search.searchwiki("Barack Obama")
+    print search.searchwiki("VII Corps", "fr")
                 
