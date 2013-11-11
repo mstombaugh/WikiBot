@@ -3,6 +3,7 @@ import json
 from getWiki import Wiki
 
 def main():
+    stats = {}
     with open('wikibot_info.json') as cfgFile:
         for line in cfgFile:
             config = json.loads(line.strip())
@@ -23,22 +24,22 @@ def main():
             if comment.fullname not in already_done['already_done'] and calls_wikibot:
                 #format a reply. 
                 #msg = 'WikiBot here.  This is what I found (ALPHA BUILD):\n\n'
-                callIndex = firstQuotes = secondQuotes = False
+                codeWordFound = firstQuotes = secondQuotes = False
                 wikiError=False
                 wikiRequest=[]
                 wikiArticle = ''
                 language = 'english'
                 print op_text.split(' ')
                 for word in op_text.split(' '):
-                    if 'wikibot' in word or 'wiki-bot' in word:
-                        callIndex = True
-                    if '"' in word and callIndex and not firstQuotes:
+                    if 'wikibot' in word or 'wiki-bot' in word and not codeWordFound:
+                        codeWordFound = True
+                    elif '"' in word and codeWordFound and not firstQuotes:
                         firstQuotes = True
                         wikiRequest.append(str(word).translate(None,'"').encode('utf_8','ignore'))
                         wikiRequest.append(' ')
-                    elif callIndex and not firstQuotes and '"' not in word:
+                    elif codeWordFound and not firstQuotes and '"' not in word:
                         language = str(word)
-                    elif '"' in word and callIndex and firstQuotes and not secondQuotes:
+                    elif '"' in word and codeWordFound and firstQuotes and not secondQuotes:
                         secondQuotes = True
                         wikiRequest.append(str(word).translate(None,'"').encode('utf_8','ignore'))
                     elif firstQuotes and not secondQuotes:
@@ -47,7 +48,7 @@ def main():
                     if '"' in word and word.count('"')>1:
                         secondQuotes = True
                 if not firstQuotes or not secondQuotes:
-                    wikiArticle = 'Error: Please put quotation marks (") on both sides of your query. ' +  str(firstQuotes) + ' ' + str(secondQuotes)
+                    wikiArticle = 'Error: Please put quotation marks (") on both sides of your query. '
                     wikiError = True
                 if not wikiError: 
                     msg =''.join(wikiRequest)
@@ -63,9 +64,11 @@ def main():
                
                 print comment.subreddit.display_name
                 try:
-                    stats[comment.subreddit.display_name].append(msg)
-                except:
-                    stats[comment.subreddit.display_name] = msg
+                    if msg.strip() not in stats[comment.subreddit.display_name]:
+                        stats[comment.subreddit.display_name].append(msg.strip())
+                except Exception as e:
+                    stats[comment.subreddit.display_name] = [msg.strip()]
+                    print e
 
                 comment.reply(wikiArticle)
                 already_done['already_done'].append(comment.fullname)
@@ -81,6 +84,7 @@ def main():
         with open('stats','w+') as statistics:
             statistics.write(json.dumps(stats)+'\n')
         print e
+        main()
     
 def convertLanguageCode(language):
         try:

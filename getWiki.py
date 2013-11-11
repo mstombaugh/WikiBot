@@ -9,13 +9,23 @@ class Wiki(object):
         
         wikipedia.set_lang(lang)
         try:
-            wikipedia.search(term)
+            wikipedia.page(term)
         except requests.exceptions.ConnectionError:
             wikipedia.set_lang("en")
-        
+        except:
+            pass
+
         try:
             results = wikipedia.page(term)
+            summary = (results.summary[:9000] + '..') if len(results.summary) > 9000 else results.summary
+            response = response + "Here is what WikiBot found on \"" + term + "\":\n\n" + results.title +"  \n" + summary + "\n\n" + "Link to article [" + results.title + "](" + self.formaturl(results.url) + ")\n\n"
+            
+            response = self.recommender(results, response, term)
+            
+            response = self.wikifooter(response)
+            
         except wikipedia.exceptions.DisambiguationError as e:
+            response=''
             if len(e.options) >= 6:
                 response = response + "Your query " + term + " to WikiBot returned a disambiguation page. Here are the top 5 pages:  \n"
             else:
@@ -35,21 +45,12 @@ class Wiki(object):
                 else:
                     response = response + "[" + x.title + "](" + self.formaturl(x.url) + "): " + wikipedia.summary(option.encode('ascii', 'ignore'), sentences=1) + "  \n"
                     
-            response = self.wikifooter(response)
-            return response    
+            response = self.wikifooter(response)  
         except wikipedia.exceptions.PageError as e:
             response = response + "Sorry, WikiBot can not find a page on \"" + term + "\"."
             response = self.wikifooter(response)
-            return response
-        
-        summary = (results.summary[:9000] + '..') if len(results.summary) > 9000 else results.summary
-        response = response + "Here is what WikiBot found on \"" + term + "\":\n\n" + results.title +"  \n" + summary + "\n\n" + "Link to article [" + results.title + "](" + self.formaturl(results.url) + ")\n\n"
-        
-        response = self.recommender(results, response, term)
-        
-        response = self.wikifooter(response)
-        
         return response
+        
     
     def recommender(self, page, response, term):
         recs = wikipedia.search(term,results=4)
