@@ -436,6 +436,7 @@ class WikipediaPage(object):
             query_params = {
                 'prop':'categories',
                 'cllimit':'max',
+                'clshow':'!hidden',
                 'titles': self.title,
             }
             
