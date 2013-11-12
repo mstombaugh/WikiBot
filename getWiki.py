@@ -28,7 +28,7 @@ class Wiki(object):
             summary = (results.summary[:9000] + '...') if len(results.summary) > 9000 else results.summary
             response = response + "Here is what WikiBot found on" + " \"" + term + "\":\n\n**" + results.title +"**  \n> " + summary + "\n\n" + "Link to article" + " [" + results.title + "](" + self.formaturl(results.url) + ")\n\n"
             
-            response = self.recommender(results, response, term)
+            response = self.recommender(results, response)
             
             response = self.wikifooter(response)
             
@@ -64,8 +64,8 @@ class Wiki(object):
         else:
             return response, categories
         
-    def recommender(self, page, response, term):
-        recs = wikipedia.search(term,results=4)
+    def recommender(self, page, response):
+        recs = wikipedia.search(page.title,results=4)
         if len(recs) > 1:
             response = response + "Here are other related articles:" + "  \n"
             for rec in recs:
@@ -86,7 +86,7 @@ class Wiki(object):
         
 if __name__ == "__main__":
     search = Wiki()
-    output =  search.searchwiki("Mercury", "en")
+    output =  search.searchwiki("Banana", "en")
     print output[0]
     print output[1]
                 
