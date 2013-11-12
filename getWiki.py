@@ -64,7 +64,7 @@ class Wiki(object):
             response = self.wikifooter(response)
          
         if len(categories) == 0:
-            return (response, None)
+            return response, None
         else:
             return response, categories
         
