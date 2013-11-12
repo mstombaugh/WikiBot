@@ -66,7 +66,7 @@ class Wiki(object):
         if len(categories) == 0:
             return (response, None)
         else:
-            return (response, categories)
+            return response, categories
         
     def recommender(self, page, response, term):
         recs = wikipedia.search(term,results=4)

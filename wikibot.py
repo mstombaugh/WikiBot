@@ -18,7 +18,7 @@ def main():
     wikibot_names = ['wikibot!', 'wiki-bot!', '!wikibot']
     wiki = Wiki()
     try:
-        for comment in praw.helpers.comment_stream(r,'all'):
+        for comment in praw.helpers.comment_stream(r,'all', limit = None):
             op_text = comment.body.lower()
             calls_wikibot = any(string in op_text for string in wikibot_names)
             if comment.fullname not in already_done['already_done'] and calls_wikibot:
@@ -58,21 +58,26 @@ def main():
                     msg = msg.replace('&lt;',"<")
                     msg = msg.strip()
                     print msg + ' ' + language
-                    wikiArticle = wiki.searchwiki(msg,convertLanguageCode(language))
-                #msg=(wikiArticle)
-                #if language:
-                #    msg += '\n\n Requested language: ' + language
+                    wikiArticle, catagories = wiki.searchwiki(msg,convertLanguageCode(language))
                
                 print comment.subreddit.display_name
-                try:
-                    if msg.strip() not in stats[comment.subreddit.display_name]:
-                        stats[comment.subreddit.display_name].append(msg.strip())
-                except Exception as e:
-                    stats[comment.subreddit.display_name] = [msg.strip()]
-                    print e
+                for cat in catagories:
+                    try:
+                        if cat not in stats[comment.subreddit.display_name].keys():
+                            stats['catagories'][comment.subreddit.display_name][cat] = 1
+                        else:
+                             stats['catagories'][comment.subreddit.display_name][cat] += 1
+                    except Exception as e:
+                        #stats['catagories'][comment.subreddit.display_name] = {}
+                        stats['catagories'][comment.subreddit.display_name][cat] = 1
+                        #print 'exception'
 
                 comment.reply(wikiArticle)
                 already_done['already_done'].append(comment.fullname)
+                try:
+                    stats['subreddits'][comment.subreddit.display_name][msg] += 1
+                except:
+                    stats['subreddits'][comment.subreddit.display_name][msg] = 1
     except KeyboardInterrupt:
         with open('already_done','w+') as f:
             f.write(json.dumps(already_done)+'\n')
