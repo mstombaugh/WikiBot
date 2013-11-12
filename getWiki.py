@@ -59,10 +59,7 @@ class Wiki(object):
             response = response + "Sorry, WikiBot can not find a page on" + " \"" + term + "\"."
             response = self.wikifooter(response)
          
-        if len(categories) == 0:
-            return response, None
-        else:
-            return response, categories
+        return response, categories
         
     def recommender(self, page, response):
         recs = wikipedia.search(page.title,results=4)
