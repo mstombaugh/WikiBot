@@ -92,7 +92,7 @@ class Wiki(object):
             for rec in recs:
                 if rec != page.title:
                     x = wikipedia.page(rec)
-                    if site:
+                    if self.site:
                         response = response + "<li><a href\"" + x.url + "\">" + x.title + "</a></li>"
                     else:
                         response = response + "[" + x.title + "](" + self.formaturl(x.url) + ")  \n"
@@ -108,14 +108,14 @@ class Wiki(object):
     
     def wikifooter(self, input):
         if self.site:
-            return input
+            return input.encode('ascii', 'ignore')
         else:
             input = input + "\n\nFor more information on WikiBot, visit [wiki-bot.net](http://www.wiki-bot.net/)."
         return input.encode('ascii', 'ignore')
         
 if __name__ == "__main__":
     search = Wiki()
-    output =  search.searchwiki("Banana", "en", True)
+    output =  search.searchwiki("Texas A&M", "en", True)
     print output[0]
     print output[1]
                 
