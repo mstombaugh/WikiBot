@@ -29,7 +29,7 @@ class Wiki(object):
             results = wikipedia.page(term)
             summary = (results.summary[:9000] + '...') if len(results.summary) > 9000 else results.summary
             if site:
-                response = response + "Here is what WikiBot found on" + " \"" + term + "\": <b>" + results.title +"</b><br>" + summary + "<br>" + "Link to article: <a href=\"" + results.url + "\">" + results.title + "</a><br>"
+                response = response + "Here is what WikiBot found on" + " \"" + term + "\": <br><b>" + results.title +"</b><br>" + summary + "<br>" + "Link to article: <a href=\"" + results.url + "\">" + results.title + "</a><br>"
             else:
                 response = response + "Here is what WikiBot found on" + " \"" + term + "\":\n\n**" + results.title +"**  \n> " + summary + "\n\n" + "Link to article" + " [" + results.title + "](" + self.formaturl(results.url) + ")\n\n"
             
