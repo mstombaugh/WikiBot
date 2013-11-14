@@ -29,7 +29,7 @@ class Wiki(object):
             results = wikipedia.page(term)
             summary = (results.summary[:9000] + '...') if len(results.summary) > 9000 else results.summary
             if site:
-                response = response + "<p>Here is what WikiBot found on" + " \"" + term + "\":</p> <br><p><b>" + results.title +"</b></p><br><p style=\"text-indent:50px;\">" + summary + "</p><br>" + "<p>Link to article: <a href=\"" + results.url + "\">" + results.title + "</a></p><br>"
+                response = response + "<p>Here is what WikiBot found on" + " \"" + term + "\":</p><p><b>" + results.title +"</b></p><p style=\"text-indent:50px;\">" + summary + "</p>" + "<p>Link to article: <a href=\"" + results.url + "\">" + results.title + "</a></p>"
             else:
                 response = response + "Here is what WikiBot found on" + " \"" + term + "\":\n\n**" + results.title +"**  \n> " + summary + "\n\n" + "Link to article" + " [" + results.title + "](" + self.formaturl(results.url) + ")\n\n"
             
@@ -86,14 +86,14 @@ class Wiki(object):
         recs = wikipedia.search(page.title,results=4)
         if len(recs) > 1:
             if self.site:
-                response = response + "<p>Here are other related articles:</p><br><ul>"
+                response = response + "<p>Here are other related articles:</p><ul>"
             else:
                 response = response + "Here are other related articles:" + "  \n"
             for rec in recs:
                 if rec != page.title:
                     x = wikipedia.page(rec)
                     if self.site:
-                        response = response + "<li><a href\"" + x.url + "\">" + x.title + "</a></li>"
+                        response = response + "<li><a href=\"" + x.url + "\">" + x.title + "</a></li>"
                     else:
                         response = response + "[" + x.title + "](" + self.formaturl(x.url) + ")  \n"
             if self.site:
