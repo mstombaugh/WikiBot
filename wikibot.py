@@ -58,7 +58,7 @@ def main():
                     msg = msg.replace('&lt;',"<")
                     msg = msg.strip()
                     print msg + ' ' + language
-                    wikiArticle, catagories = wiki.searchwiki(msg,convertLanguageCode(language))
+                    wikiArticle, catagories = wiki.searchwiki(msg,convertLanguageCode(language),False)
                
                 print comment.subreddit.display_name
                 for cat in catagories:
