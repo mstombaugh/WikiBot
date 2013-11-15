@@ -27,13 +27,14 @@ class Wiki(object):
 
         try:
             results = wikipedia.page(term)
+            title = results.title
             summary = (results.summary[:9000] + '...') if len(results.summary) > 9000 else results.summary
             if site:
-                response = response + "<p>Here is what WikiBot found on" + " \"" + term + "\":</p><p><b>" + results.title +"</b></p><p style=\"text-indent:50px;\">" + summary + "</p>" + "<p>Link to article: <a href=\"" + results.url + "\">" + results.title + "</a></p>"
+                response = response + "<p>Here is what WikiBot found on" + " \"" + term + "\":</p><p><b>" + title +"</b></p><p style=\"text-indent:50px;\">" + summary + "</p>" + "<p>Link to article: <a href=\"" + results.url + "\">" + title + "</a></p>"
             else:
                 response = response + "Here is what WikiBot found on" + " \"" + term + "\":\n\n**" + results.title +"**  \n> " + summary + "\n\n" + "Link to article" + " [" + results.title + "](" + self.formaturl(results.url) + ")\n\n"
             
-            response = self.recommender(results, response)
+            response = self.recommender(title, response)
             
             response = self.wikifooter(response)
             
@@ -82,15 +83,15 @@ class Wiki(object):
          
         return response, categories
         
-    def recommender(self, page, response):
-        recs = wikipedia.search(page.title,results=4)
+    def recommender(self, title, response):
+        recs = wikipedia.search(title,results=4)
         if len(recs) > 1:
             if self.site:
                 response = response + "<p>Here are other related articles:</p><ul>"
             else:
                 response = response + "Here are other related articles:" + "  \n"
             for rec in recs:
-                if rec != page.title:
+                if rec != title:
                     x = wikipedia.page(rec)
                     if self.site:
                         response = response + "<li><a href=\"" + x.url + "\">" + x.title + "</a></li>"
@@ -115,7 +116,7 @@ class Wiki(object):
         
 if __name__ == "__main__":
     search = Wiki()
-    output =  search.searchwiki("Texas A&M", "en", True)
+    output =  search.searchwiki("Texas A&M", "en", False)
     print output[0]
     print output[1]
                 
