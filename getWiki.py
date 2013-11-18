@@ -10,7 +10,7 @@ class Wiki(object):
        
     def searchwiki(self, input, lang, site):
         response = ''
-        term = input.encode('ascii', 'ignore')
+        term = input.encode('utf-8', 'ignore')
         self.lang = lang
         categories = []
         self.site = site
@@ -60,7 +60,7 @@ class Wiki(object):
                 if count >= 6:
                     break  
                 try:
-                    x = wikipedia.page(option.encode('ascii', 'ignore'))
+                    x = wikipedia.page(option.encode('utf-8', 'ignore'))
                 except (wikipedia.exceptions.PageError, wikipedia.exceptions.DisambiguationError):
                     if site:
                         response = response + "<li>" + option + ": Sorry couldn't fetch the link." + "</li>"
@@ -68,9 +68,9 @@ class Wiki(object):
                         response = response + "* " + option + ": Sorry couldn't fetch the link." + "  \n"
                 else:
                     if site:
-                        response = response + "<li><a href=\"" + x.url + "\">" + x.title + "</a>: " + wikipedia.summary(option.encode('ascii', 'ignore'), sentences=1) + "</li>"
+                        response = response + "<li><a href=\"" + x.url + "\">" + x.title + "</a>: " + wikipedia.summary(option.encode('utf-8', 'ignore'), sentences=1) + "</li>"
                     else:
-                        response = response + "* [" + x.title + "](" + self.formaturl(x.url) + "): " + wikipedia.summary(option.encode('ascii', 'ignore'), sentences=1) + "  \n"
+                        response = response + "* [" + x.title + "](" + self.formaturl(x.url) + "): " + wikipedia.summary(option.encode('utf-8', 'ignore'), sentences=1) + "  \n"
              
             if site:
                 response = response + "</ul>"
@@ -109,10 +109,10 @@ class Wiki(object):
     
     def wikifooter(self, input):
         if self.site:
-            return input.encode('ascii', 'ignore')
+            return input.encode('utf-8', 'ignore')
         else:
             input = input + "\n\nFor more information on WikiBot, visit [wiki-bot.net](http://www.wiki-bot.net/)."
-        return input.encode('ascii', 'ignore')
+        return input.encode('utf-8', 'ignore')
         
 if __name__ == "__main__":
     search = Wiki()
