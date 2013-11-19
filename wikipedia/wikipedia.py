@@ -443,7 +443,30 @@ class WikipediaPage(object):
             request = _wiki_request(**query_params)
             self._categories = []
             for category in request['query']['pages'][self.pageid]['categories']:
-                self._categories.append(category['title'][9:])
+                cat = category['title'][9:]
+                cat = cat.replace(" ","_")
+                self._categories.append(cat)
+            
+            extraLevel = True
+            if extraLevel:
+                extracats = []
+                for x in self._categories:
+                    query_params = {
+                    'prop':'categories',
+                    'cllimit':'max',
+                    'clshow':'!hidden',
+                    'titles': "Category:" + x,
+                    }
+                    request = _wiki_request(**query_params)
+                    pageid = list(request['query']['pages'].keys())[0]
+                    
+                    for category in request['query']['pages'][pageid]['categories']:
+                        cat = category['title'][9:]
+                        cat = cat.replace(" ","_")
+                        if cat not in extracats and cat != "Categories_for_deletion":
+                            extracats.append(cat)
+                        
+                    self._categories = self._categories + extracats
                 
         return self._categories
 

@@ -1,4 +1,3 @@
-#import wikipedia
 import requests
 import wikipedia
 
@@ -119,4 +118,5 @@ if __name__ == "__main__":
     output =  search.searchwiki("Texas A&M", "en", False)
     print output[0]
     print output[1]
+    print len(output[1])
                 
