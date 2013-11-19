@@ -77,13 +77,13 @@ def main():
                     stats['queries'] = []
                 if not stats['count']:
                     stats['count'] = 0
-                print 'loaded base dict'
+                #print 'loaded base dict'
                 #make sure category is in the list
                 if comment.subreddit.display_name not in stats['categories']:
                     stats['categories'][comment.subreddit.display_name] = {}
                 if comment.subreddit.display_name not in stats['subreddits']:
                     stats['subreddits'][comment.subreddit.display_name] = {}
-                print stats
+                #print stats
                 #add categories to subreddit
                 for cat in categories:
                     try:
