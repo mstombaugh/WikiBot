@@ -14,7 +14,7 @@ def main():
         for line in statistics:
             try:
                 stats = json.loads(line.strip())
-            except:
+            except Exception as e:
                 print e
     r=praw.Reddit(user_agent = 'Wiki Bot')
     r.login(config['user'],config['pass'])
@@ -63,32 +63,40 @@ def main():
                     print msg + ' ' + language
                     wikiArticle, categories = wiki.searchwiki(msg,convertLanguageCode(language),False)
                
-                print comment.subreddit.display_name
+                #print comment.subreddit.display_name
+                if comment.subreddit.display_name not in stats['categories']:
+                    stats['categories'][comment.subreddit.display_name] = {}
+                if comment.subreddit.display_name not in stats['subreddits']:
+                    stats['subreddits'][comment.subreddit.display_name] = {}
                 for cat in categories:
                     try:
-                        if cat not in stats[comment.subreddit.display_name].keys():
+                        if cat not in stats['categories'][comment.subreddit.display_name]:
                             stats['categories'][comment.subreddit.display_name][cat] = 1
                         else:
                              stats['categories'][comment.subreddit.display_name][cat] += 1
-                    except Exception as e:
+                    except:
                         #stats['categories'][comment.subreddit.display_name] = {}
                         stats['categories'][comment.subreddit.display_name][cat] = 1
-                        #print 'exception'
+                        print 'exception'
 
                 comment.reply(wikiArticle)
                 already_done['already_done'].append(comment.fullname)
                 try:
                     stats['subreddits'][comment.subreddit.display_name]['count'] += 1
                 except:
+                    if not stats['subreddits'][comment.subreddit.display_name]:
+                        stats['subreddits'][comment.subreddit.display_name] = {}
                     stats['subreddits'][comment.subreddit.display_name]['count'] = 1
                 try:
                     stats['subreddits'][comment.subreddit.display_name]['recent'].insert(0,msg)
                     if len(stats['subreddits'][comment.subreddit.display_name]['recent']) >= 10:
                         stats['subreddits'][comment.subreddit.display_name]['recent'].pop()
-                except:
+                except Exception as e:
+                    if not stats['subreddits'][comment.subreddit.display_name]:
+                        stats['subreddits'][comment.subreddit.display_name] = {}
                     stats['subreddits'][comment.subreddit.display_name]['recent']= [msg]
-
-                 with open('stats','w+') as statistics:
+                    print 'creating recent list' + str(e)
+                with open('stats','w+') as statistics:
                     statistics.write(json.dumps(stats)+'\n')
     except KeyboardInterrupt:
         with open('already_done','w+') as f:
@@ -101,7 +109,7 @@ def main():
             f.write(json.dumps(already_done)+'\n')
         with open('stats','w+') as statistics:
             statistics.write(json.dumps(stats)+'\n')
-        print e
+        print 'error2 ' + str(e)
         main()
     
 def convertLanguageCode(language):
