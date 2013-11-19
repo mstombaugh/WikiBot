@@ -64,10 +64,16 @@ def main():
                     wikiArticle, categories = wiki.searchwiki(msg,convertLanguageCode(language),False)
                
                 #print comment.subreddit.display_name
+                comment.reply(wikiArticle)
+                already_done['already_done'].append(comment.fullname)
+                
+                #stats section
+                #make sure category is in the list
                 if comment.subreddit.display_name not in stats['categories']:
                     stats['categories'][comment.subreddit.display_name] = {}
                 if comment.subreddit.display_name not in stats['subreddits']:
                     stats['subreddits'][comment.subreddit.display_name] = {}
+                #add categories to subreddit
                 for cat in categories:
                     try:
                         if cat not in stats['categories'][comment.subreddit.display_name]:
@@ -78,24 +84,29 @@ def main():
                         #stats['categories'][comment.subreddit.display_name] = {}
                         stats['categories'][comment.subreddit.display_name][cat] = 1
                         print 'exception'
-
-                comment.reply(wikiArticle)
-                already_done['already_done'].append(comment.fullname)
+                #total count
+                try:
+                    stats['count'] += 1
+                except:
+                    stats['count'] = 1
+                #individual subreddit count    
                 try:
                     stats['subreddits'][comment.subreddit.display_name]['count'] += 1
                 except:
                     if not stats['subreddits'][comment.subreddit.display_name]:
                         stats['subreddits'][comment.subreddit.display_name] = {}
                     stats['subreddits'][comment.subreddit.display_name]['count'] = 1
+                #last 10 queries
                 try:
-                    stats['subreddits'][comment.subreddit.display_name]['recent'].insert(0,msg)
-                    if len(stats['subreddits'][comment.subreddit.display_name]['recent']) >= 10:
-                        stats['subreddits'][comment.subreddit.display_name]['recent'].pop()
+                    stats['queries'].insert(0,msg)
+                    if len(stats['queries']) >= 10:
+                        stats['queries'].pop()
                 except Exception as e:
-                    if not stats['subreddits'][comment.subreddit.display_name]:
-                        stats['subreddits'][comment.subreddit.display_name] = {}
-                    stats['subreddits'][comment.subreddit.display_name]['recent']= [msg]
-                    print 'creating recent list' + str(e)
+                    if not stats['queries']:
+                        stats['queries'] = []
+                    stats['queries']= [msg]
+                    print 'creating queries list' + str(e)
+                #save to JSON file
                 with open('stats','w+') as statistics:
                     statistics.write(json.dumps(stats)+'\n')
     except KeyboardInterrupt:
