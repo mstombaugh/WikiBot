@@ -25,7 +25,7 @@ class Wiki(object):
             pass
 
         try:
-            results = wikipedia.page(term)
+            results = wikipedia.page(term, extraLevel = True)
             title = results.title
             summary = (results.summary[:9000] + '...') if len(results.summary) > 9000 else results.summary
             if site:
@@ -115,7 +115,7 @@ class Wiki(object):
         
 if __name__ == "__main__":
     search = Wiki()
-    output =  search.searchwiki("Texas A&M", "en", False)
+    output =  search.searchwiki("Bowen Loftin", "en", False)
     print output[0]
     print output[1]
     print len(output[1])

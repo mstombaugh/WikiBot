@@ -144,7 +144,7 @@ def summary(title, sentences=0, chars=0, auto_suggest=True, redirect=True):
     return summary
 
 
-def page(title, auto_suggest=True, redirect=True, preload=False):
+def page(title, auto_suggest=True, redirect=True, preload=False, extraLevel = False):
     '''
     Get a WikipediaPage object for the page with title `title`.
 
@@ -163,7 +163,7 @@ def page(title, auto_suggest=True, redirect=True, preload=False):
             # if there is no suggestion or search results, the page doesn't exist
             raise PageError(title)
 
-    return WikipediaPage(title, redirect=redirect, preload=preload)
+    return WikipediaPage(title, redirect=redirect, preload=preload, extraLevel=extraLevel)
 
 
 class WikipediaPage(object):
@@ -172,9 +172,10 @@ class WikipediaPage(object):
     Uses property methods to filter data from the raw HTML.
     '''
 
-    def __init__(self, title, redirect=True, preload=False, original_title=''):
+    def __init__(self, title, redirect=True, preload=False, original_title='', extraLevel=False):
         self.title = title
         self.original_title = original_title or title
+        self.extraLevel = extraLevel
 
         self.load(redirect=redirect, preload=preload)
 
@@ -447,8 +448,7 @@ class WikipediaPage(object):
                 cat = cat.replace(" ","_")
                 self._categories.append(cat)
             
-            extraLevel = True
-            if extraLevel:
+            if self.extraLevel:
                 extracats = []
                 for x in self._categories:
                     query_params = {
