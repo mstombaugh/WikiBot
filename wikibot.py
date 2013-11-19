@@ -25,8 +25,6 @@ def main():
             op_text = comment.body.lower()
             calls_wikibot = any(string in op_text for string in wikibot_names)
             if comment.fullname not in already_done['already_done'] and calls_wikibot:
-                #format a reply. 
-                #msg = 'WikiBot here.  This is what I found (ALPHA BUILD):\n\n'
                 codeWordFound = firstQuotes = secondQuotes = False
                 wikiError=False
                 wikiRequest=[]
@@ -81,7 +79,6 @@ def main():
                         else:
                              stats['categories'][comment.subreddit.display_name][cat] += 1
                     except:
-                        #stats['categories'][comment.subreddit.display_name] = {}
                         stats['categories'][comment.subreddit.display_name][cat] = 1
                         print 'exception'
                 #total count
