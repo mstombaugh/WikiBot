@@ -7,13 +7,16 @@ def main():
     with open('wikibot_info.json') as cfgFile:
         for line in cfgFile:
             config = json.loads(line.strip())
+            break
     with open('already_done') as f:
         for line in f:
             already_done=json.loads(line.strip())
+            break
     with open('stats') as statistics:
         for line in statistics:
             try:
                 stats = json.loads(line.strip())
+                break
             except Exception as e:
                 print e
     r=praw.Reddit(user_agent = 'Wiki Bot')
@@ -66,11 +69,21 @@ def main():
                 already_done['already_done'].append(comment.fullname)
                 
                 #stats section
+                if not stats['categories']:
+                    stats['categories'] = {}
+                if not stats['subreddits']:
+                    stats['subreddits'] = {}
+                if not stats['queries']:
+                    stats['queries'] = []
+                if not stats['count']:
+                    stats['count'] = 0
+                print 'loaded base dict'
                 #make sure category is in the list
                 if comment.subreddit.display_name not in stats['categories']:
                     stats['categories'][comment.subreddit.display_name] = {}
                 if comment.subreddit.display_name not in stats['subreddits']:
                     stats['subreddits'][comment.subreddit.display_name] = {}
+                print stats
                 #add categories to subreddit
                 for cat in categories:
                     try:
