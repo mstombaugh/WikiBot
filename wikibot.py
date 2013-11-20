@@ -145,7 +145,8 @@ class WikiBot:
                     wikiArticle, categories = self.wiki.searchwiki(msg,self.convertLanguageCode(language),False)
                
                 #print comment.subreddit.display_name
-                if(onReddit):
+                #make sure people can't ask wikibot about itself, otherwise we could cause an infinite loop of wikibot calls
+                if(onReddit and not any(string in msg for string in self.wikibot_names)):
                     comment.reply(wikiArticle)
                     self.already_done['already_done'].append(fullname)
                 
