@@ -468,9 +468,8 @@ class WikipediaPage(object):
                             xcat = xcat.replace(" ","_")
                             if xcat not in self._categories and xcat not in extracats and xcat not in ignore:
                                 extracats.append(xcat)
-                    except KeyError as e:
-                        print e
-                        print xrequest['query']['pages'][pageid]
+                    except:
+                        pass
                     
                         
                 self._categories = self._categories + extracats
