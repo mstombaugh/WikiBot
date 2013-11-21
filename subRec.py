@@ -36,5 +36,8 @@ def subRec(articleCats):
         similarity[sub] = sum / (len(articleCats) * magSum)
     
     #get top three similarites
-    return sorted(similarity.items(), key=lambda x: x[1], reverse = True)[:3]
-       
+    results = []
+    for sub in sorted(similarity.items(), key=lambda x: x[1], reverse = True)[:3]:
+        results.append((sub[0], sorted(categories[sub[0]].items(), key=lambda x: x[1], reverse = True)[:1]))
+            
+    return results
