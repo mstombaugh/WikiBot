@@ -109,12 +109,12 @@ class Wiki(object):
         
         if len(subs) > 0:
             if self.site:
-                response = response + "<p>Here are subreddits related to this article:</p></ul>"
+                response = response + "<p>Based on what kinds of articles subreddits search for with WikiBot, here are related subreddits:</p></ul>"
                 for sub in subs:
                     response = response + "<li><a href=\"www.reddit.com/r/" + sub[0] + "\">/r/" + sub[0] + "</a></li>"
                 response = response + "</ul>"
             else:
-                response = response + "\n\nHere are subreddits related to this article:  \n"
+                response = response + "\n\nBased on what kinds of articles subreddits search for with WikiBot, here are related subreddits:  \n"
                 for sub in subs:
                     response = response + "/r/" + sub[0]
                     
