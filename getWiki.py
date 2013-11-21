@@ -98,7 +98,7 @@ class Wiki(object):
                     if self.site:
                         response = response + "<li><a href=\"" + x.url + "\">" + x.title + "</a></li>"
                     else:
-                        response = response + "* [" + x.title + "](" + self.formaturl(x.url) + ")  \n"
+                        response = response + "[" + x.title + "](" + self.formaturl(x.url) + ")  \n"
             if self.site:
                 response = response + "</ul>"
             
@@ -116,7 +116,7 @@ class Wiki(object):
             else:
                 response = response + "\n\nBased on what kinds of articles subreddits search for with WikiBot, here are related subreddits:  \n"
                 for sub in subs:
-                    response = response + "* /r/" + sub[0] + "  \n"
+                    response = response + "/r/" + sub[0] + "  \n"
                     
         return response
     
