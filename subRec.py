@@ -1,6 +1,5 @@
 import json
 import math
-from getWiki import Wiki
 
 def subRec(articleCats):
     #get stats file for categories
@@ -39,7 +38,3 @@ def subRec(articleCats):
     #get top three similarites
     return sorted(similarity.items(), key=lambda x: x[1], reverse = True)[:3]
        
-if __name__ == "__main__":
-    wiki = Wiki()
-    results, cats = wiki.searchwiki("Johnny Manziel","en",False)
-    print subRec(cats)
