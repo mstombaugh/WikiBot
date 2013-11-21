@@ -101,7 +101,7 @@ class WikiBot:
             except:
                 return language
                 
-    def parseComments(self,op_text='', subreddit='missingSubreddit', onReddit = False, comment = None):
+    def parseComments(self,op_text='', subreddit='WikiBot', onReddit = False, comment = None):
             if onReddit:
                 fullname = comment.fullname
             else:
@@ -149,57 +149,57 @@ class WikiBot:
                 if(onReddit and not any(string in msg for string in self.wikibot_names)):
                     comment.reply(wikiArticle)
                     self.already_done['already_done'].append(fullname)
-                
-                #stats section
-                if not self.stats['categories']:
-                    self.stats['categories'] = {}
-                if not self.stats['subreddits']:
-                    self.stats['subreddits'] = {}
-                if not self.stats['queries']:
-                    self.stats['queries'] = []
-                if not self.stats['count']:
-                    self.stats['count'] = 0
-                #print 'loaded base dict'
-                #make sure category is in the list
-                if subreddit not in self.stats['categories']:
-                    self.stats['categories'][subreddit] = {}
-                if subreddit not in self.stats['subreddits']:
-                    self.stats['subreddits'][subreddit] = {}
-                #print stats
-                #add categories to subreddit
-                for cat in categories:
-                    try:
-                        if cat not in self.stats['categories'][subreddit]:
-                            self.stats['categories'][subreddit][cat] = 1
-                        else:
-                             self.stats['categories'][subreddit][cat] += 1
-                    except:
-                        self.stats['categories'][subreddit][cat] = 1
-                        print 'exception'
-                #total count
-                try:
-                    self.stats['count'] += 1
-                except:
-                    self.stats['count'] = 1
-                #individual subreddit count    
-                try:
-                    self.stats['subreddits'][subreddit]['count'] += 1
-                except:
-                    if not self.stats['subreddits'][subreddit]:
-                        self.stats['subreddits'][subreddit] = {}
-                    self.stats['subreddits'][subreddit]['count'] = 1
-                #last 10 queries
-                try:
-                    self.stats['queries'].insert(0,msg)
-                    if len(self.stats['queries']) > 10:
-                        self.stats['queries'].pop()
-                except Exception as e:
+                if not 'wikibot' in subreddit.lower():
+                    #stats section
+                    if not self.stats['categories']:
+                        self.stats['categories'] = {}
+                    if not self.stats['subreddits']:
+                        self.stats['subreddits'] = {}
                     if not self.stats['queries']:
                         self.stats['queries'] = []
-                    self.stats['queries']= [msg]
-                    print 'creating queries list' + str(e)
-                with open('stats','w+') as statistics:
-                    statistics.write(json.dumps(self.stats)+'\n')
+                    if not self.stats['count']:
+                        self.stats['count'] = 0
+                    #print 'loaded base dict'
+                    #make sure category is in the list
+                    if subreddit not in self.stats['categories']:
+                        self.stats['categories'][subreddit] = {}
+                    if subreddit not in self.stats['subreddits']:
+                        self.stats['subreddits'][subreddit] = {}
+                    #print stats
+                    #add categories to subreddit
+                    for cat in categories:
+                        try:
+                            if cat not in self.stats['categories'][subreddit]:
+                                self.stats['categories'][subreddit][cat] = 1
+                            else:
+                                 self.stats['categories'][subreddit][cat] += 1
+                        except:
+                            self.stats['categories'][subreddit][cat] = 1
+                            print 'exception'
+                    #total count
+                    try:
+                        self.stats['count'] += 1
+                    except:
+                        self.stats['count'] = 1
+                    #individual subreddit count    
+                    try:
+                        self.stats['subreddits'][subreddit]['count'] += 1
+                    except:
+                        if not self.stats['subreddits'][subreddit]:
+                            self.stats['subreddits'][subreddit] = {}
+                        self.stats['subreddits'][subreddit]['count'] = 1
+                    #last 10 queries
+                    try:
+                        self.stats['queries'].insert(0,msg)
+                        if len(self.stats['queries']) > 10:
+                            self.stats['queries'].pop()
+                    except Exception as e:
+                        if not self.stats['queries']:
+                            self.stats['queries'] = []
+                        self.stats['queries']= [msg]
+                        print 'creating queries list' + str(e)
+                    with open('stats','w+') as statistics:
+                        statistics.write(json.dumps(self.stats)+'\n')
                     
 if __name__ == "__main__":
    bot = WikiBot()
