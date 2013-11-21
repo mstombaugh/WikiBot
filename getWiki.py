@@ -1,5 +1,6 @@
 import requests
 import wikipedia
+import subRec as subRec
 
 class Wiki(object):
 
@@ -35,11 +36,13 @@ class Wiki(object):
             
             response = self.recommender(title, response)
             
+            categories = results.categories
+            
+            response = self.subRecommender(response, categories)
+            
             response = self.wikifooter(response)
             
-            if not site:
-                categories = results.categories
-            
+
         except wikipedia.exceptions.DisambiguationError as e:
             response=''
             if len(e.options) >= 6:
@@ -100,6 +103,22 @@ class Wiki(object):
                 response = response + "</ul>"
             
         return response
+        
+    def subRecommender(self, response, categories):
+        subs = subRec.subRec(categories)
+        
+        if len(subs) > 0:
+            if self.site:
+                response = response + "<p>Here are subreddits related to this article:</p></ul>"
+                for sub in subs:
+                    response = response + "<li><a href=\"www.reddit.com/r/" + sub[0] + "\">/r/" + sub[0] + "</a></li>"
+                response = response + "</ul>"
+            else:
+                response = response + "\n\nHere are subreddits related to this article:  \n"
+                for sub in subs:
+                    response = response + "/r/" + sub[0]
+                    
+        return response
     
     def formaturl(self, url):
         url = url.replace("(","\(")
@@ -115,16 +134,6 @@ class Wiki(object):
         
 if __name__ == "__main__":
     search = Wiki()
-    output =  search.searchwiki("Albert Einstein", "en", False)
+    output =  search.searchwiki("Texas A&M", "en", True)
     print output[0]
-    print output[1]
-    print len(output[1])
-    repeat = []
-    for cat in output[1]:
-        if cat not in repeat:
-            repeat.append(cat)
-        else:
-            print "repeat", cat
-            break
-        
-                
+              
