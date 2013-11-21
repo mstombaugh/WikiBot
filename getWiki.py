@@ -106,18 +106,17 @@ class Wiki(object):
         
     def subRecommender(self, response, categories):
         subs = subRec.subRec(categories)
-        print subs
         
         if len(subs) > 0:
             if self.site:
                 response = response + "<p>Based on what kinds of articles subreddits search for with WikiBot, here are related subreddits:</p></ul>"
                 for sub in subs:
-                    response = response + '<li><a href="http://www.reddit.com/r/' + sub[0] + '">/r/' + sub[0] + "</a> based on similar categories like " + sub[1][0][0].replace("_"," ") + "</li>"
+                    response = response + '<li><a href="http://www.reddit.com/r/' + sub[0] + '">/r/' + sub[0] + "</a> based on similar categories like \"" + sub[1][0][0].replace("_"," ") + "\"</li>"
                 response = response + "</ul>"
             else:
                 response = response + "\n\nBased on what kinds of articles subreddits search for with WikiBot, here are related subreddits:  \n"
                 for sub in subs:
-                    response = response + "/r/" + sub[0] + "based on similar categories like " + sub[1][0][0].replace("_"," ") + "  \n"
+                    response = response + "/r/" + sub[0] + " based on similar categories like \"" + sub[1][0][0].replace("_"," ") + "\"  \n"
                     
         return response
     
