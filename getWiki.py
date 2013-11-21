@@ -115,8 +115,16 @@ class Wiki(object):
         
 if __name__ == "__main__":
     search = Wiki()
-    output =  search.searchwiki("Bowen Loftin", "en", False)
+    output =  search.searchwiki("Albert Einstein", "en", False)
     print output[0]
     print output[1]
     print len(output[1])
+    repeat = []
+    for cat in output[1]:
+        if cat not in repeat:
+            repeat.append(cat)
+        else:
+            print "repeat", cat
+            break
+        
                 

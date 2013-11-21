@@ -450,6 +450,7 @@ class WikipediaPage(object):
             
             if self.extraLevel:
                 extracats = []
+                ignore = ['Categories_for_deletion','Wikipedia_article_lists']
                 for x in self._categories:
                     query_params = {
                     'prop':'categories',
@@ -457,16 +458,18 @@ class WikipediaPage(object):
                     'clshow':'!hidden',
                     'titles': "Category:" + x,
                     }
-                    request = _wiki_request(**query_params)
-                    pageid = list(request['query']['pages'].keys())[0]
+                    xrequest = _wiki_request(**query_params)
+                    pageid = list(xrequest['query']['pages'].keys())[0]
                     
-                    for category in request['query']['pages'][pageid]['categories']:
-                        cat = category['title'][9:]
-                        cat = cat.replace(" ","_")
-                        if cat not in extracats and cat != "Categories_for_deletion":
-                            extracats.append(cat)
+                    #print request['query']['pages'][pageid]['categories']
+                    
+                    for xcategory in xrequest['query']['pages'][pageid]['categories']:
+                        xcat = xcategory['title'][9:]
+                        xcat = xcat.replace(" ","_")
+                        if xcat not in self._categories and xcat not in extracats and xcat not in ignore:
+                            extracats.append(xcat)
                         
-                    self._categories = self._categories + extracats
+                self._categories = self._categories + extracats
                 
         return self._categories
 
