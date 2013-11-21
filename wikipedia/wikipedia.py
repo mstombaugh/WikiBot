@@ -450,7 +450,7 @@ class WikipediaPage(object):
             
             if self.extraLevel:
                 extracats = []
-                ignore = ['Categories_for_deletion','Wikipedia_article_lists']
+                ignore = ['Categories_for_deletion','Wikipedia_article_lists','Commons_category_with_local_link_same_as_on_Wikidata','Categories_requiring_diffusion']
                 for x in self._categories:
                     query_params = {
                     'prop':'categories',
@@ -462,12 +462,16 @@ class WikipediaPage(object):
                     pageid = list(xrequest['query']['pages'].keys())[0]
                     
                     #print request['query']['pages'][pageid]['categories']
+                    try:
+                        for xcategory in xrequest['query']['pages'][pageid]['categories']:
+                            xcat = xcategory['title'][9:]
+                            xcat = xcat.replace(" ","_")
+                            if xcat not in self._categories and xcat not in extracats and xcat not in ignore:
+                                extracats.append(xcat)
+                    except KeyError as e:
+                        print e
+                        print xrequest['query']['pages'][pageid]
                     
-                    for xcategory in xrequest['query']['pages'][pageid]['categories']:
-                        xcat = xcategory['title'][9:]
-                        xcat = xcat.replace(" ","_")
-                        if xcat not in self._categories and xcat not in extracats and xcat not in ignore:
-                            extracats.append(xcat)
                         
                 self._categories = self._categories + extracats
                 
