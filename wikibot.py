@@ -1,6 +1,7 @@
 import praw
 import json
 from getWiki import Wiki
+from unidecode import unidecode
 
 class WikiBot:
     def setUp(self):
@@ -119,15 +120,15 @@ class WikiBot:
                         codeWordFound = True
                     elif '"' in word and codeWordFound and not firstQuotes:
                         firstQuotes = True
-                        wikiRequest.append(str(word).translate(None,'"').encode('utf_8','ignore'))
+                        wikiRequest.append(unidecode(str(word).translate(None,'"')))
                         wikiRequest.append(' ')
                     elif codeWordFound and not firstQuotes and '"' not in word:
                         language = str(word)
                     elif '"' in word and codeWordFound and firstQuotes and not secondQuotes:
                         secondQuotes = True
-                        wikiRequest.append(str(word).translate(None,'"').encode('utf_8','ignore'))
+                        wikiRequest.append(unidecode(str(word).translate(None,'"')))
                     elif firstQuotes and not secondQuotes:
-                        wikiRequest.append(str(word).encode('utf_8','ignore'))
+                        wikiRequest.append(unidecode(str(word)))
                         wikiRequest.append(' ')
                     if '"' in word and word.count('"')>1:
                         secondQuotes = True
