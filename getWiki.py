@@ -95,11 +95,14 @@ class Wiki(object):
                 response = response + "Here are other related articles:" + "  \n"
             for rec in recs:
                 if rec != title:
-                    x = wikipedia.page(rec)
-                    if self.site:
-                        response = response + "<li><a href=\"" + x.url + "\">" + x.title + "</a></li>"
-                    else:
-                        response = response + "[" + x.title + "](" + self.formaturl(x.url) + ")  \n"
+                    try:
+                        x = wikipedia.page(rec)
+                        if self.site:
+                            response = response + "<li><a href=\"" + x.url + "\">" + x.title + "</a></li>"
+                        else:
+                            response = response + "[" + x.title + "](" + self.formaturl(x.url) + ")  \n"
+                    except:
+                        pass
             if self.site:
                 response = response + "</ul>"
             
@@ -135,6 +138,6 @@ class Wiki(object):
         
 if __name__ == "__main__":
     search = Wiki()
-    output =  search.searchwiki("Smegma", "en", True)
+    output =  search.searchwiki("oxyhydrogen", "en", False)
     print output[0]
               

@@ -44,6 +44,7 @@ def search(query, results=10, suggestion=False):
     search_params['srlimit'] = results
 
     raw_results = _wiki_request(**search_params)
+    #print raw_results
     search_results = (d['title'] for d in raw_results['query']['search'])
     if suggestion:
         if raw_results['query'].get('searchinfo') != None and len(raw_results['query']['search']) == 0:
