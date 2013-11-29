@@ -23,7 +23,7 @@ class Wiki(object):
         except requests.exceptions.ConnectionError:
             wikipedia.set_lang("en")
             lang = "en"
-        except:
+        except Exception as e:
             pass
 
         try:
@@ -135,6 +135,6 @@ class Wiki(object):
         
 if __name__ == "__main__":
     search = Wiki()
-    output =  search.searchwiki("Texas", "en", True)
+    output =  search.searchwiki("Smegma", "en", True)
     print output[0]
               

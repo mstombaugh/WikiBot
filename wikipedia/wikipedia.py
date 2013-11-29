@@ -33,7 +33,6 @@ def search(query, results=10, suggestion=False):
     * results - the maxmimum number of results returned
     * suggestion - if True, return results and suggestion (if any) in a tuple
     '''
-
     search_params = {
         'list': 'search',
         'srprop': '',
@@ -42,13 +41,12 @@ def search(query, results=10, suggestion=False):
     if suggestion:
         search_params['srinfo'] = 'suggestion'
     search_params['srsearch'] = query
-    search_params['limit'] = results
+    search_params['srlimit'] = results
 
     raw_results = _wiki_request(**search_params)
     search_results = (d['title'] for d in raw_results['query']['search'])
-
     if suggestion:
-        if raw_results['query'].get('searchinfo'):
+        if raw_results['query'].get('searchinfo') != None and len(raw_results['query']['search']) == 0:
             return list(search_results), raw_results['query']['searchinfo']['suggestion']
         else:
             return list(search_results), None
@@ -154,15 +152,13 @@ def page(title, auto_suggest=True, redirect=True, preload=False, extraLevel = Fa
     * redirect - allow redirection without raising RedirectError
     * preload - load content, summary, images, references, and links during initialization
     '''
-
     if auto_suggest:
         results, suggestion = search(title, results=1, suggestion=True)
         try:
             title = suggestion or results[0]
-        except IndexError:
+        except IndexError as e:
             # if there is no suggestion or search results, the page doesn't exist
             raise PageError(title)
-
     return WikipediaPage(title, redirect=redirect, preload=preload, extraLevel=extraLevel)
 
 
@@ -499,5 +495,5 @@ def _wiki_request(**params):
     }
 
     r = requests.get(API_URL, params=params, headers=headers)
-
+    
     return r.json()
