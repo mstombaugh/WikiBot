@@ -32,7 +32,7 @@ class WikiBot:
     def run(self):
         try:
             for comment in praw.helpers.comment_stream(self.r,'all', limit = None):
-                op_text = comment.body.lower()
+                op_text = unidecode(comment.body.lower())
                 self.parseComments(op_text, subreddit=comment.subreddit.display_name , onReddit = True, comment = comment)
         except KeyboardInterrupt:
             with open('already_done','w+') as f:
