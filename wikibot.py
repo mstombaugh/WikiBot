@@ -1,5 +1,6 @@
 import praw
 import json
+import traceback
 from getWiki import Wiki
 
 class WikiBot:
@@ -14,7 +15,7 @@ class WikiBot:
         with open('already_done') as f:
             for line in f:
                 self.already_done=json.loads(line.strip())
-                
+                            
         with open('stats') as statistics:
             for line in statistics:
                 try:
@@ -31,7 +32,7 @@ class WikiBot:
     def run(self):
         try:
             for comment in praw.helpers.comment_stream(self.r,'WikiBot', limit = None):
-                op_text = comment.body.lower().decode('utf-8')
+                op_text = comment.body.lower().encode('utf-8')
                 self.parseComments(op_text, subreddit=comment.subreddit.display_name , onReddit = True, comment = comment)
         except KeyboardInterrupt:
             with open('already_done','w+') as f:
@@ -45,6 +46,7 @@ class WikiBot:
             with open('stats','w+') as statistics:
                 statistics.write(json.dumps(self.stats)+'\n')
             print 'error2 ' + str(e)
+            traceback.print_exc()
             self.run()
         
     def convertLanguageCode(self,language):
