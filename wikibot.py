@@ -1,5 +1,6 @@
 import praw
 import json
+import traceback
 from getWiki import Wiki
 
 class WikiBot:
@@ -45,6 +46,7 @@ class WikiBot:
             with open('stats','w+') as statistics:
                 statistics.write(json.dumps(self.stats)+'\n')
             print 'error2 ' + str(e)
+            traceback.print_exc()
             self.run()
         
     def convertLanguageCode(self,language):
