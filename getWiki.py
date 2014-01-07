@@ -1,7 +1,6 @@
 import requests
 import wikipedia
 import subRec as subRec
-from unidecode import unidecode
 
 class Wiki(object):
 
@@ -11,7 +10,7 @@ class Wiki(object):
        
     def searchwiki(self, input, lang, site):
         response = ''
-        term = unidecode(input)
+        term = input.decode('utf-8')
         self.lang = lang
         categories = []
         self.site = site
@@ -63,7 +62,7 @@ class Wiki(object):
                 if count >= 6:
                     break  
                 try:
-                    x = wikipedia.page(unidecode(option))
+                    x = wikipedia.page(option.encode('utf-8'))
                 except (wikipedia.exceptions.PageError, wikipedia.exceptions.DisambiguationError):
                     if site:
                         response = response + "<li>" + option + ": Sorry couldn't fetch the link." + "</li>"
@@ -71,9 +70,9 @@ class Wiki(object):
                         response = response + "* " + option + ": Sorry couldn't fetch the link." + "  \n"
                 else:
                     if site:
-                        response = response + "<li><a href=\"" + x.url + "\">" + x.title + "</a>: " + wikipedia.summary(unidecode(option), sentences=1) + "</li>"
+                        response = response + "<li><a href=\"" + x.url + "\">" + x.title + "</a>: " + wikipedia.summary(option.encode('utf-8'), sentences=1) + "</li>"
                     else:
-                        response = response + "* [" + x.title + "](" + self.formaturl(x.url) + "): " + wikipedia.summary(unidecode(option), sentences=1) + "  \n"
+                        response = response + "* [" + x.title + "](" + self.formaturl(x.url) + "): " + wikipedia.summary(option.encode('utf-8'), sentences=1) + "  \n"
              
             if site:
                 response = response + "</ul>"
@@ -133,13 +132,13 @@ class Wiki(object):
     
     def wikifooter(self, input):
         if self.site:
-            return unidecode(input)
+            return input.encode('utf-8')
         else:
             input = input + "\n\nFor more information on WikiBot, visit [wiki-bot.net](http://www.wiki-bot.net/)."
-        return unidecode(input)
+        return input.encode('utf-8')
         
 if __name__ == "__main__":
     search = Wiki()
-    output =  search.searchwiki("oxyhydrogen", "en", False)
+    output =  search.searchwiki("Feline", "japanese", False)
     print output[0]
               
