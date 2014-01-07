@@ -5,7 +5,7 @@ from getWiki import Wiki
 
 class WikiBot:
     def setUp(self):
-        self.stats = {}
+        #self.stats = {}
         self.already_done = {}
         self.config = {}
         with open('wikibot_info.json') as cfgFile:
@@ -15,7 +15,7 @@ class WikiBot:
         with open('already_done') as f:
             for line in f:
                 self.already_done=json.loads(line.strip())
-                
+        ''''        
         with open('stats') as statistics:
             for line in statistics:
                 try:
@@ -24,6 +24,7 @@ class WikiBot:
                 except Exception as e:
                     self.stats = json.loads('{"count": 1, "subreddits": {}, "categories": {}, "queries": []}'.strip())
                     print e
+        '''
         self.r=praw.Reddit(user_agent = 'Wiki Bot')
         self.r.login(self.config['user'],self.config['pass'])
         self.wikibot_names = ['wikibot!', 'wiki-bot!', '!wikibot']
@@ -37,14 +38,14 @@ class WikiBot:
         except KeyboardInterrupt:
             with open('already_done','w+') as f:
                 f.write(json.dumps(self.already_done)+'\n')
-            with open('stats','w+') as statistics:
-                statistics.write(json.dumps(self.stats)+'\n')
+            '''with open('stats','w+') as statistics:
+                statistics.write(json.dumps(self.stats)+'\n')'''
             print('Goodbye!')
         except Exception as e:
             with open('already_done','w+') as f:
                 f.write(json.dumps(self.already_done)+'\n')
-            with open('stats','w+') as statistics:
-                statistics.write(json.dumps(self.stats)+'\n')
+            '''with open('stats','w+') as statistics:
+                statistics.write(json.dumps(self.stats)+'\n')'''
             print 'error2 ' + str(e)
             traceback.print_exc()
             self.run()
