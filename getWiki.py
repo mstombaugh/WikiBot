@@ -10,7 +10,7 @@ class Wiki(object):
        
     def searchwiki(self, input, lang, site):
         response = ''
-        term = input.decode('utf-8')
+        term = input
         self.lang = lang
         categories = []
         self.site = site
