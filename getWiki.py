@@ -39,7 +39,7 @@ class Wiki(object):
             
             categories = results.categories
             
-            response = self.subRecommender(response, categories)
+            #response = self.subRecommender(response, categories)   Removed 1/7/2014
             
             response = self.wikifooter(response)
             
@@ -85,7 +85,8 @@ class Wiki(object):
             response = self.wikifooter(response)
          
         return response, categories
-        
+    
+    
     def recommender(self, title, response):
         recs = wikipedia.search(title,results=4)
         if len(recs) > 1:
@@ -107,7 +108,8 @@ class Wiki(object):
                 response = response + "</ul>"
             
         return response
-        
+    
+    """Recommender removed 1/7/2014 - no longer needed"""
     def subRecommender(self, response, categories):
         subs = subRec.subRec(categories)
         
