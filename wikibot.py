@@ -102,7 +102,6 @@ class WikiBot:
                 return language
                 
     def parseComments(self,op_text='', subreddit='WikiBot', onReddit = False, comment = None):
-            global msg
             if onReddit:
                 fullname = comment.fullname
             else:
@@ -144,12 +143,10 @@ class WikiBot:
                     msg = msg.strip()
                     print msg + ' ' + language
                     wikiArticle, categories = self.wiki.searchwiki(msg,self.convertLanguageCode(language),False)
-               
-                #print comment.subreddit.display_name
-                #make sure people can't ask wikibot about itself, otherwise we could cause an infinite loop of wikibot calls
-                if(onReddit and not any(string in msg for string in self.wikibot_names)):
-                    comment.reply(wikiArticle)
-                    self.already_done['already_done'].append(fullname)
+                    #make sure people can't ask wikibot about itself, otherwise we could cause an infinite loop of wikibot calls
+                    if(onReddit and not any(string in msg for string in self.wikibot_names)):
+                        comment.reply(wikiArticle)
+                        self.already_done['already_done'].append(fullname)
                 #if not 'wikibot' in subreddit.lower():
                     #stats section Jan 07, 2014: removed stats section because it was causing errors and people were searching for unrelated queries on Reddit.
                     '''if not self.stats['categories']:
