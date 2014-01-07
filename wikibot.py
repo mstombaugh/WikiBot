@@ -102,6 +102,7 @@ class WikiBot:
                 return language
                 
     def parseComments(self,op_text='', subreddit='WikiBot', onReddit = False, comment = None):
+            global msg
             if onReddit:
                 fullname = comment.fullname
             else:
