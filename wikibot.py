@@ -1,7 +1,6 @@
 import praw
 import json
 from getWiki import Wiki
-from unidecode import unidecode
 
 class WikiBot:
     def setUp(self):
@@ -31,8 +30,8 @@ class WikiBot:
 
     def run(self):
         try:
-            for comment in praw.helpers.comment_stream(self.r,'all', limit = None):
-                op_text = unidecode(comment.body.lower())
+            for comment in praw.helpers.comment_stream(self.r,'WikiBot', limit = None):
+                op_text = comment.body.lower().decode('utf-8')
                 self.parseComments(op_text, subreddit=comment.subreddit.display_name , onReddit = True, comment = comment)
         except KeyboardInterrupt:
             with open('already_done','w+') as f:
@@ -120,15 +119,15 @@ class WikiBot:
                         codeWordFound = True
                     elif '"' in word and codeWordFound and not firstQuotes:
                         firstQuotes = True
-                        wikiRequest.append(unidecode(str(word).translate(None,'"')))
+                        wikiRequest.append(str(word).translate(None,'"').decode('utf-8'))
                         wikiRequest.append(' ')
                     elif codeWordFound and not firstQuotes and '"' not in word:
                         language = str(word)
                     elif '"' in word and codeWordFound and firstQuotes and not secondQuotes:
                         secondQuotes = True
-                        wikiRequest.append(unidecode(str(word).translate(None,'"')))
+                        wikiRequest.append(str(word).translate(None,'"').decode('utf-8'))
                     elif firstQuotes and not secondQuotes:
-                        wikiRequest.append(unidecode(str(word)))
+                        wikiRequest.append(str(word).decode('utf-8'))
                         wikiRequest.append(' ')
                     if '"' in word and word.count('"')>1:
                         secondQuotes = True
