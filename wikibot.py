@@ -150,9 +150,9 @@ class WikiBot:
                 if(onReddit and not any(string in msg for string in self.wikibot_names)):
                     comment.reply(wikiArticle)
                     self.already_done['already_done'].append(fullname)
-                if not 'wikibot' in subreddit.lower():
-                    #stats section
-                    if not self.stats['categories']:
+                #if not 'wikibot' in subreddit.lower():
+                    #stats section Jan 07, 2014: removed stats section because it was causing errors and people were searching for unrelated queries on Reddit.
+                    '''if not self.stats['categories']:
                         self.stats['categories'] = {}
                     if not self.stats['subreddits']:
                         self.stats['subreddits'] = {}
@@ -160,6 +160,7 @@ class WikiBot:
                         self.stats['queries'] = []
                     if not self.stats['count']:
                         self.stats['count'] = 0
+                    
                     #print 'loaded base dict'
                     #make sure category is in the list
                     if subreddit not in self.stats['categories']:
@@ -201,7 +202,7 @@ class WikiBot:
                         print 'creating queries list' + str(e)
                     with open('stats','w+') as statistics:
                         statistics.write(json.dumps(self.stats)+'\n')
-                    
+                    '''
 if __name__ == "__main__":
    bot = WikiBot()
    bot.setUp()
