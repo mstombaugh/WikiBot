@@ -135,6 +135,7 @@ class Wiki(object):
             return input.encode('utf-8')
         else:
             input = input + "\n\nFor more information on WikiBot, visit [wiki-bot.net](http://www.wiki-bot.net/)."
+            input = input + "\n\nHave you heard?  Wiki_Bot can now handle 40 different languages!  Check out [this post](http://www.reddit.com/r/WikiBot/comments/1uoodo/wikibot_alternative_language_support/) to see how to call for Wiki_Bot in different languages!"
         return input.encode('utf-8')
         
 if __name__ == "__main__":
