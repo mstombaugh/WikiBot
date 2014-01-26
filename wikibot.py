@@ -178,7 +178,7 @@ class WikiBot:
                     wikiArticle, categories = self.wiki.searchwiki(msg,self.convertLanguageCode(language),False)
                     #make sure people can't ask wikibot about itself, otherwise we could cause an infinite loop of wikibot calls
                     if(onReddit and not any(string in msg for string in self.wikibot_names)):
-                        #comment.reply(wikiArticle)
+                        comment.reply(wikiArticle)
                         self.already_done['already_done'].append(fullname)
                 #if not 'wikibot' in subreddit.lower():
                     #stats section Jan 07, 2014: removed stats section because it was causing errors and people were searching for unrelated queries on Reddit.
