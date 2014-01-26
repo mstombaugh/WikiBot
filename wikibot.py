@@ -8,10 +8,13 @@ class WikiBot:
         #self.stats = {}
         self.already_done = {}
         self.config = {}
+        self.blacklist = {}
         with open('wikibot_info.json') as cfgFile:
             for line in cfgFile:
                 self.config = json.loads(line.strip())
-                
+        with open('blacklist') as file:
+            for line in file:
+                self.blacklist = json.loads(line.strip())
         with open('already_done') as f:
             for line in f:
                 self.already_done=json.loads(line.strip())
@@ -32,18 +35,22 @@ class WikiBot:
 
     def run(self):
         try:
-            for comment in praw.helpers.comment_stream(self.r,'all', limit = None):
+            for comment in praw.helpers.comment_stream(self.r,'wikibot', limit = None):
                 op_text = comment.body.lower().encode('utf-8')
                 self.parseComments(op_text, subreddit=comment.subreddit.display_name , onReddit = True, comment = comment)
         except KeyboardInterrupt:
             with open('already_done','w+') as f:
                 f.write(json.dumps(self.already_done)+'\n')
+            with open('blacklist','w+') as file:
+                file.write(json.dumps(self.blacklist)+'\n')
             '''with open('stats','w+') as statistics:
                 statistics.write(json.dumps(self.stats)+'\n')'''
             print('Goodbye!')
         except Exception as e:
             with open('already_done','w+') as f:
                 f.write(json.dumps(self.already_done)+'\n')
+            with open('blacklist','w+') as file:
+                file.write(json.dumps(self.blacklist)+'\n')
             '''with open('stats','w+') as statistics:
                 statistics.write(json.dumps(self.stats)+'\n')'''
             print 'error2 ' + str(e)
@@ -107,6 +114,10 @@ class WikiBot:
     def parseComments(self,op_text='', subreddit='WikiBot', onReddit = False, comment = None):
             if onReddit:
                 fullname = comment.fullname
+                if str(comment.author).lower() in self.blacklist['blacklist']:
+                    self.already_done['already_done'].append(fullname)
+                    print 'blacklisted user'
+                    return False
             else:
                 fullname = ''
             calls_wikibot = any(string in op_text for string in self.wikibot_names)
@@ -144,11 +155,30 @@ class WikiBot:
                     msg = msg.replace('&gt;',">")
                     msg = msg.replace('&lt;',"<")
                     msg = msg.strip()
-                    print msg + ' ' + language
+                    print msg + ' ' + language + ' ' + str(comment.author)
+                    
+                    
+                    if language == 'blacklist' and str(comment.author) == 'Wiki_Bot':
+                        print 'blacklisting user ' + msg
+                        self.blacklist['blacklist'].append(msg)
+                        comment.reply('User ' + msg + ' added to blacklist.')
+                        self.already_done['already_done'].append(fullname)
+                        #capchas are lame
+                        #self.r.send_message(msg,'Blacklisted from using Wiki_Bot', "Dear user, you have been blacklisted from using /u/Wiki_Bot until further notice.  Go to /r/wikibot to find out why.")
+                        return False
+                        
+                    if language == 'unblacklist' and str(comment.author) == 'Wiki_Bot':
+                        print 'unblackisting ' + msg
+                        self.blacklist['blacklist'].remove(msg)
+                        comment.reply('User ' + msg + ' removed from blacklist.')
+                        self.already_done['already_done'].append(fullname)
+                        #self.r.send_message(msg,'Blacklist removed for Wiki_Bot', "Dear user, you have been unblacklisted from using /u/Wiki_Bot.  Please do not misuse the bot in the future.")
+                        return False
+                        
                     wikiArticle, categories = self.wiki.searchwiki(msg,self.convertLanguageCode(language),False)
                     #make sure people can't ask wikibot about itself, otherwise we could cause an infinite loop of wikibot calls
                     if(onReddit and not any(string in msg for string in self.wikibot_names)):
-                        comment.reply(wikiArticle)
+                        #comment.reply(wikiArticle)
                         self.already_done['already_done'].append(fullname)
                 #if not 'wikibot' in subreddit.lower():
                     #stats section Jan 07, 2014: removed stats section because it was causing errors and people were searching for unrelated queries on Reddit.
